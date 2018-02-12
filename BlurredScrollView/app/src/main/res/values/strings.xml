@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">BlurredScrollView</string>
+    <string name="blur_background">Blurred background</string>
+</resources>

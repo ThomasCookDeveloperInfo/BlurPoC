@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.blurredscrollview.TestActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <HorizontalScrollView
+        android:id="@+id/scrollView"
+        android:background="@drawable/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.blurredscrollview.TimeSlotSelectorView
+            android:id="@+id/timeSlotSelectorView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:hourWidth="120dp"
+            app:eventCell="@layout/event_cell" />
+
+    </HorizontalScrollView>
+
+</android.support.constraint.ConstraintLayout>
