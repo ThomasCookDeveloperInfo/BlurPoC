@@ -9,9 +9,9 @@
 
     <HorizontalScrollView
         android:id="@+id/scrollView"
-        android:background="@drawable/background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/background">
 
         <com.blurredscrollview.TimeSlotSelectorView
             android:id="@+id/timeSlotSelectorView"

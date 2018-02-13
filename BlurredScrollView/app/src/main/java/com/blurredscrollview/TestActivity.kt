@@ -13,7 +13,7 @@ class TestActivity : AppCompatActivity() {
 
 //        val testFragment = BookingFragment()
 //        testFragment.arguments = BookingFragment.createArgs(0, 0, 1000, 1000)
-//
+
 //        supportFragmentManager.beginTransaction()
 //                .add(R.id.container, testFragment)
 //                .addToBackStack(null)
@@ -42,6 +42,7 @@ class TestActivity : AppCompatActivity() {
         Handler().post {
             val timeslotView = findViewById<TimeSlotSelectorView>(R.id.timeSlotSelectorView)
             timeslotView.setEvents(listOf(TimeSlotEvent(start1, end1), TimeSlotEvent(start2, end2), TimeSlotEvent(start3, end3), TimeSlotEvent(start4, end4)))
+//            timeslotView.setEvents(listOf(TimeSlotEvent(start1, end1), TimeSlotEvent(start2, end2), TimeSlotEvent(start3, end3)))
         }
     }
 }

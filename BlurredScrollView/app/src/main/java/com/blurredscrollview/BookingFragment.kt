@@ -4,11 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
-import android.view.View
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import com.jackandphantom.blurimage.BlurImage
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -48,27 +48,30 @@ class TimeSlotSelectorView(context: Context, attrs: AttributeSet?, defStyleAttr:
             // Set the layout width
             val layoutWidth = (HOURS_IN_DAY * hourWidth).toInt()
             layoutParams = RelativeLayout.LayoutParams(layoutWidth, height)
-
-            setWillNotDraw(false)
         }
+
+        setWillNotDraw(false)
+        ViewCompat.postInvalidateOnAnimation(this@TimeSlotSelectorView)
     }
 
     // Set the events on the view
     fun setEvents(events: Collection<TimeSlotEvent>) {
         post {
             // Get the parent view
-            val parentView = (parent as? View) ?: return@post
+            val parentView = (parent as? HorizontalScrollView) ?: return@post
 
             // Remove all the views
             this.removeAllViews()
+
+            parentView.setOnScrollChangeListener { view, _, _, _, _ ->
+                invalidate()
+            }
 
             // Work out the width of a minute
             val minuteWidth = hourWidth / MINUTES_IN_HOUR
 
             // For each of the passed events, inflate a view and add it
             events.forEach {
-                // Set will not cache drawing
-                setWillNotCacheDrawing(true)
 
                 // Get the start and end times in minutes
                 val startMinutes = it.startTime.get(Calendar.HOUR_OF_DAY) * MINUTES_IN_HOUR + it.startTime.get(Calendar.MINUTE)
@@ -89,54 +92,49 @@ class TimeSlotSelectorView(context: Context, attrs: AttributeSet?, defStyleAttr:
                 params.topMargin = y1
                 addView(cell, params)
             }
-
-            // Redraw
-            invalidate()
         }
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        // Update the images on the backgrounds
-        updateEventBackgroundImages()
+        updateEventBackgroundDrawables()
     }
 
-    // Cache the bmp of the root
-    private var bmpScreenshot: Bitmap? = null
+    private fun updateEventBackgroundDrawables() {
+        // Get the parent view
+        val parentView = (parent as? HorizontalScrollView) ?: return
+        val scrollX = parentView.scrollX
 
-    private fun updateEventBackgroundImages() {
-        val parentView = (parent as? View) ?: return
-        parentView.post {
+        val xScale = width.toFloat() / backgroundImage.width.toFloat()
+        val yScale = height.toFloat() / backgroundImage.height.toFloat()
 
-            if (bmpScreenshot === null) {
-                // Create bmp of the root view
-                val root = rootView
-                root.isDrawingCacheEnabled = true
-                root.buildDrawingCache()
-                bmpScreenshot = root.drawingCache
-            }
-
-            // For each child view, work out the blurred background image
-            for (index in 0 until childCount) {
-                // Get the child view
-                val child = getChildAt(index)
-                child.post {
-                    // If child is in bounds of parent view
-                    if (child.x >= 0 && child.x <= parentView.width) {
-                        if (child.width > 0 && child.height > 0) {
-                            // Create clipped bmp of the root bmp
-                            val location = intArrayOf(0, 0)
-                            child.getLocationInWindow(location)
-                            val clippedBmp = Bitmap.createBitmap(bmpScreenshot, location[0], location[1], child.width, child.height, null, false)
-
-                            // Get reference to the cell background image view on the child
-                            val cellBackgroundImage = child.findViewById<ImageView>(R.id.cellBackground)
-
-                            // Blur the clipped bmp and apply it to the image view
-                            BlurImage.with(context.applicationContext).load(clippedBmp).intensity(1f).Async(true).into(cellBackgroundImage)
-                        }
+        for (index in 0 until childCount) {
+            val event = getChildAt(index)
+            event.post {
+                val eventBg = getChildAt(index).findViewById<ImageView>(R.id.cellBackground)
+                if (eventBg is ImageView) {
+                    var bgLeft = (event.left + scrollX).toFloat() / xScale
+                    if (bgLeft < 0) {
+                        bgLeft = 0f
+                    } else if (bgLeft > backgroundImage.width) {
+                        bgLeft = backgroundImage.width.toFloat()
                     }
+
+                    var bgRight = (event.right + scrollX).toFloat() / xScale
+                    if (bgRight > backgroundImage.width) {
+                        bgRight = backgroundImage.width.toFloat()
+                    } else if (bgRight < 0) {
+                        bgRight = 0f
+                    }
+
+                    val bgTop = event.top.toFloat() / yScale
+                    val bgWidth = bgRight - bgLeft
+                    val bgHeight = event.height.toFloat() / yScale
+
+                    val clippedBgBitmap = Bitmap.createBitmap(backgroundImage, bgLeft.toInt(), bgTop.toInt(), bgWidth.toInt(), bgHeight.toInt())
+
+                    eventBg.setImageBitmap(clippedBgBitmap)
                 }
             }
         }

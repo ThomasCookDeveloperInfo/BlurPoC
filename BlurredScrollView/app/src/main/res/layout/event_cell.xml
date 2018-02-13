@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/cellBackground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/blur_background"/>
+        <ImageView
+            android:id="@+id/cellBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
+            android:contentDescription="@string/blur_background"/>
+
+
+    <!--<FrameLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@color/colorPrimary"></FrameLayout>-->
+
+    <!--<com.wonderkiln.blurkit.BlurLayout-->
+        <!--xmlns:blurkit="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/blurCell"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--:blurRadius="1"-->
+        <!--blurkit:fps="60"/>-->
+
+    <!--<com.flurgle.blurkit.BlurLayout-->
+        <!--xmlns:blurkit="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/blurCell"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--blurkit:blk_toBlur="@id/scrollView"-->
+        <!--blurkit:blk_blurRadius="1"-->
+        <!--blurkit:blk_fps="60" />-->
 
 </android.support.constraint.ConstraintLayout>
